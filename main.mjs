@@ -21,6 +21,9 @@ window.fb_authenticate = fb_authenticate;
 import { fb_WriteRec }
     from './script.mjs';
 window.fb_WriteRec = fb_WriteRec;
+import { fb_ReadRec }
+    from './script.mjs';
+window.fb_ReadRec = fb_ReadRec;
 
 /**************************************************************/
 // index.html main code

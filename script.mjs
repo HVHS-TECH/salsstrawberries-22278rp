@@ -22,12 +22,14 @@ import { getAuth, GoogleAuthProvider, signInWithPopup }
     from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 import { ref, set }
     from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { get }
+    from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 /**************************************************************/
 // EXPORT FUNCTIONS
 // List all the functions called by code or html outside of this module
 /**************************************************************/
 
-export { fb_initialise, fb_authenticate, fb_WriteRec }
+export { fb_initialise, fb_authenticate, fb_WriteRec, fb_ReadRec }
 
 function fb_initialise() {
     console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
@@ -48,6 +50,9 @@ function fb_initialise() {
     console.info(firebaseGameDB);
 }
 
+var currentUser = null;
+var userId = null;
+
 function fb_authenticate() {
     console.log('%c fb_authenticate(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
     const AUTH = getAuth();
@@ -59,6 +64,8 @@ function fb_authenticate() {
 
     signInWithPopup(AUTH, PROVIDER).then((result) => {
         //✅ Code for a successful authentication goes here
+        currentUser = result.user;
+        userId = currentUser.uid;
         console.log("Authenticated");
     })
 
@@ -70,26 +77,60 @@ function fb_authenticate() {
     //var userId = result.User;
 }
 
+
 function fb_WriteRec() {
     console.log('%c fb_WriteRec(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
     const DB = getDatabase()
-    const dbReference= ref(DB, "Test/Userdata");
+    if (!currentUser) {
+        alert("You must be logged in to submit the form.");
+        return;
+    }
 
     var name = document.getElementById("name").value;
     var favoriteFruit = document.getElementById("favoriteFruit").value;
     var fruitQuantity = document.getElementById("fruitQuantity").value;
 
-    set(dbReference, {name, favoriteFruit, fruitQuantity}).then(() => {
+    // Add additional fields here as needed
+    
+    const dbReference= ref(DB, 'Test/UID/' + userId);
+    set(dbReference, {
+        Name: name,
+        FavoriteFruit: favoriteFruit,
+        FruitQuantity: fruitQuantity
+    }).then(() => {
+        console.log("Write successful!")
+    }).catch((error) => {
+        console.log("fail Writing")
+    });
+}
 
-        //✅ Code for a successful write goes here
-        console.log("success write");
+function fb_ReadRec() {
+    console.log('%c fb_ReadRec(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
+    const DB = getDatabase()
+    const dbReference= ref(DB, "Test/UID/" + userId);
+
+    get(dbReference).then((snapshot) => {
+
+        var fb_data = snapshot.val();
+
+        if (fb_data != null) {
+
+            //✅ Code for a successful read all goes here
+            console.log("Successfully read all");
+            console.log(fb_data);
+        } else {
+
+            //✅ Code for no record found goes here
+            console.log("no record");
+            console.log(fb_data);
+
+        }
 
     }).catch((error) => {
 
-        //❌ Code for a write error goes here
-         console.log("fail write");
-         console.log(error);
-
+        //❌ Code for a read all error goes here
+        console.log("error not read all");
+        console.log(fb_data);
     });
 }
 
