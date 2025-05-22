@@ -29,7 +29,7 @@ import { get }
 // List all the functions called by code or html outside of this module
 /**************************************************************/
 
-export { fb_initialise, fb_authenticate, fb_WriteRec, fb_ReadRec }
+export { fb_initialise, fb_authenticate, fb_WriteRec, fb_ReadRec, email_view }
 
 function fb_initialise() {
     console.log('%c fb_initialise(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
@@ -52,6 +52,7 @@ function fb_initialise() {
 
 var currentUser = null;
 var userId = null;
+var emailTemplate = "";
 
 function fb_authenticate() {
     console.log('%c fb_authenticate(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
@@ -131,6 +132,30 @@ function fb_ReadRec() {
         console.log("error not read all");
         console.log(fb_data);
     });
+}
+
+// Displays email undernearth the form
+function email_view(){
+    if(!currentUser){
+        alert("You must be logged in to view email.");
+    }
+    else{
+        //calls read and waits for promise to return before changing email text
+        fb_ReadRec().then((fb_data) => {
+            emailTemplate = `
+                <div style="background: #fff0f5; border: 1px solid #ccc; padding: 1rem; border-radius: 8px;">
+                    <p>Kia ora ${fb_data.Name},</p>
+                    <p>Thank you for joining us at Sal’s Strawberry Saloon (and other fruit products)! We're thrilled to have you as a customer!</p>
+                    <p>Based on your preferences, we’ll be sending you personalized recommendations for tasty and healthy treats made with the freshest fruit — especially those ${fb_data.FavoriteFruit} we heard you love!</p>
+                    <p>At the moment, we want to offer you a deal to get fresh ${fb_data.FavoriteFruit} ${fb_data.FruitQuantity}x a week!!</p>
+                    <p>Ngā mihi nui,</p>
+                    <p><em>The Sal’s Strawberry Saloon Team</em></p>
+                </div>`
+            document.getElementById("emailOutput").innerHTML = emailTemplate;
+        }).catch((error) => {
+            console.log("error")
+        });
+    }
 }
 
 

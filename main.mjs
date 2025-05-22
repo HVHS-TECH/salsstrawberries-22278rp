@@ -24,6 +24,9 @@ window.fb_WriteRec = fb_WriteRec;
 import { fb_ReadRec }
     from './script.mjs';
 window.fb_ReadRec = fb_ReadRec;
+import { email_view }
+    from './script.mjs';
+window.email_view = email_view;
 
 /**************************************************************/
 // index.html main code
