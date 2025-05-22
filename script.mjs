@@ -79,13 +79,12 @@ function fb_authenticate() {
 
 
 function fb_WriteRec() {
-    console.log('%c fb_WriteRec(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
-    const DB = getDatabase()
     if (!currentUser) {
         alert("You must be logged in to submit the form.");
         return;
     }
-
+    console.log('%c fb_WriteRec(): ', 'color: ' + COL_C + '; background-color: ' + COL_B + ';');
+    const DB = getDatabase()
     var name = document.getElementById("name").value;
     var favoriteFruit = document.getElementById("favoriteFruit").value;
     var fruitQuantity = document.getElementById("fruitQuantity").value;
