@@ -134,13 +134,12 @@ function fb_ReadRec() {
     });
 }
 
-// Displays email undernearth the form
+// Displays email under the questions
 function email_view(){
     if(!currentUser){
         alert("You must be logged in to view email.");
     }
     else{
-        //calls read and waits for promise to return before changing email text
         fb_ReadRec().then((fb_data) => {
             emailTemplate = `
                 <div style="background: #fff0f5; border: 1px solid #ccc; padding: 1rem; border-radius: 8px;">
@@ -151,6 +150,7 @@ function email_view(){
                     <p>Ngā mihi nui,</p>
                     <p><em>The Sal’s Strawberry Saloon Team</em></p>
                 </div>`
+            console.log("Sal! The email has been sent!");
             document.getElementById("emailOutput").innerHTML = emailTemplate;
         }).catch((error) => {
             console.log("error")
